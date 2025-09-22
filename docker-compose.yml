@@ -1,0 +1,75 @@
+# PayFlow Gateway - Docker Compose Template
+# Copy this file to docker-compose.yml and set environment variables
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: payflow-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-payflowdb}
+      POSTGRES_USER: ${POSTGRES_USER:-payflow_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  # REQUIRED - set in .env file
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - payflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-payflow_user} -d ${POSTGRES_DB:-payflowdb}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: payflow-redis
+    restart: always
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - payflow-network
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}  # REQUIRED - set in .env file
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: payflow-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@payflow.local}  # Change for production
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}  # REQUIRED - set in .env file
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "${PGADMIN_PORT:-8081}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - payflow-network
+    depends_on:
+      - postgres
+
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  payflow-network:
+    driver: bridge
+

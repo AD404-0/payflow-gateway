@@ -1,0 +1,46 @@
+# PayFlow Gateway Configuration Template
+# Copy this file to application.properties and set your environment variables
+# NEVER commit application.properties with real secrets to version control
+
+spring.application.name=payflow-gateway
+
+# Server Configuration
+server.port=8080
+server.servlet.context-path=/api/v1
+
+# Database Configuration (PostgreSQL)
+spring.datasource.url=jdbc:postgresql://localhost:5432/payflowdb
+spring.datasource.username=${DB_USERNAME:payflow_user}
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+
+# Connection Pool Configuration
+spring.datasource.hikari.maximum-pool-size=20
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.idle-timeout=300000
+spring.datasource.hikari.max-lifetime=1200000
+spring.datasource.hikari.connection-timeout=20000
+
+# Redis Configuration
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+spring.data.redis.password=${REDIS_PASSWORD}
+spring.data.redis.timeout=2000ms
+
+# Security Configuration
+payflow.jwt.secret=${JWT_SECRET}
+payflow.jwt.expiration=${JWT_EXPIRATION:86400000}
+
+# API Documentation
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+
+# Logging
+logging.level.com.payflow=DEBUG
+logging.level.org.springframework.security=DEBUG

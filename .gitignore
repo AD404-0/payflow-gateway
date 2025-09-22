@@ -1,0 +1,57 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Security - Environment Variables and Sensitive Files ###
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+
+# Application properties with secrets
+src/main/resources/application.properties
+target/classes/application.properties
+
+# Logs that might contain sensitive data
+*.log
+logs/
+
+# Temporary files that might contain secrets
+*.tmp
+*.temp
+*~
+
+# Database dumps
+*.sql.gz
+*.dump
